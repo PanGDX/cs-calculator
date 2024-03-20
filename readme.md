@@ -1,9 +1,12 @@
 # Design choices
 
-### Main Page
-- Listbox (searchable) for equation selection
-- Button for running (+Keybinding)
-
-### Subpage/Popup page
-- Equation inputs customised based on the equation selected
-- Answer displayed in LaTex
+- Canvas for drawing(tablet)
+- Buttons for operations + Keybinding
+    - Save image of canvas (DONE)
+    - Clear (DONE)
+    - Run Latex conversion and display on Latex Display
+    - Run calculation
+    - Copy Latex (keybinding)
+- Latex Display
+- Latex input
+- Dropdown box for all the functions/calculations (Lagrange, etc)
