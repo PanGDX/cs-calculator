@@ -106,7 +106,7 @@ if __name__ == '__main__':
     width= root.winfo_screenwidth() 
     height= root.winfo_screenheight()
 
-    root.state('zoomed')
+    root.state('normal')
     root.title("ULTIMATE CALCULATOR")
 
     app = CalculatorApp(root)

@@ -3,4 +3,3 @@ numpy
 matplotlib
 latex2sympy2
 pyperclip
-tk
