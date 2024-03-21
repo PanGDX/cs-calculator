@@ -1,6 +1,6 @@
 # System Requirements
-- Ubuntu 22.04
-`sudo apt-get update`
+- Ubuntu 22.04 (WSL)
+Always run `sudo apt-get update`
 - Python 3.10.x
 - pip
 `sudo apt install python3-pip`
