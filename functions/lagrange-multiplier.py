@@ -1,11 +1,9 @@
 import sympy as sp
 import tkinter as tk
 from tkinter import Frame, Entry, TOP, messagebox
-import matplotlib
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
 from latex2sympy2 import latex2sympy, latex2latex
-
+from PIL import Image, ImageTk
+from io import BytesIO
 
 def solve_lagrange_multiplier(f, g, vars):
 	"""
@@ -60,34 +58,19 @@ class LagrangeApp:
 		self.vars_entry = Entry(input_frame, width=20)
 		self.vars_entry.pack(side=tk.LEFT)
 
-		self.create_matplotlib_interface()
+		self.button = tk.Button(text = "LaTeX!", command = self.on_latex)
+		self.image_label = tk.Label(self.root)
 
 		self.root.bind('<Return>', self.solve_and_display)
-	
-	def create_matplotlib_interface(self):
-		matplotlib.use('TkAgg')
-
-		matplotlib_frame = Frame(self.root)
-		matplotlib_frame.pack(side=tk.TOP, padx="5px", fill="both")
-
-		fig = matplotlib.figure.Figure(figsize=(10, 3), dpi=100)
-		self.wx = fig.add_subplot(111)
-		self.latex_canvas = FigureCanvasTkAgg(fig, master=matplotlib_frame)
-		self.latex_canvas.get_tk_widget().pack(side=TOP)
-		self.latex_canvas._tkcanvas.pack(side=TOP)
-
-		self.wx.get_xaxis().set_visible(False)
-		self.wx.get_yaxis().set_visible(False)
 		
 
 	def solve_and_display(self, event):
-		# Get user input
+		
 		f_latex = self.f_entry.get()
 		g_latex = self.g_entry.get()
 		variables = self.vars_entry.get()
 
 		try:
-			# Convert LaTeX to sympy expressions and split variables
 			f_sympy = latex2sympy(f_latex)
 			g_sympy = latex2sympy(g_latex)
 			vars_sympy = list(sp.symbols(variables))
@@ -95,37 +78,60 @@ class LagrangeApp:
 			print(f_sympy)
 			print(g_sympy)
 			print(vars_sympy)
-			# Solve using the Lagrange multiplier method
 			solutions = solve_lagrange_multiplier(f_sympy, g_sympy, vars_sympy)[0]
 
-			# Display solutions on Matplotlib canvas
 			print(solutions)
 			print(type(solutions))
 			for key in solutions:
 				print(f"{key}, {type(key)}, {solutions[key]}, {type(solutions[key])}")
 
 
-			self.display_solutions(solutions)
+			self.on_latex(solutions)
 		except Exception as e:
 			messagebox.showerror("Error", f"An error occurred: {e}")
 
-	def display_solutions(self, solutions):
-		self.wx.clear()
-
-		latex_text = ""
+	def on_latex(self, solutions):
+		latex_text = r"$\displaystyle "
 		for sol in solutions:
-			latex_text += fr"\\text{{{sp.latex(sol)}}} = {sp.latex(solutions[sol])}\\\\"
+			latex_text += fr"{sp.latex(sol)} = {sp.latex(solutions[sol])},"
+		latex_text += r" $"
 
 		print(latex_text)
 
-		formatted_latex = r"$"+{latex_text}+r"$"
-
-		self.wx.text(0.5, 0.5, formatted_latex, fontsize=12, ha='center', va='center')
-
-		self.latex_canvas.draw()
+		f = BytesIO()
+		the_color = "{" + self.root.cget('bg')[1:].upper()+"}"
+		sp.preview(latex_text, euler = False, 
+				   preamble = r"\documentclass{standalone}"
+				   	r"\usepackage{pagecolor}"
+				   	r"\definecolor{graybg}{HTML}" + the_color +
+				   	r"\pagecolor{graybg}"
+					r"\usepackage{amsmath}"
+					r"\usepackage{amsfonts}"
+					r"\usepackage{amssymb}"
+				   	r"\begin{document}"
+				   ,
+				   viewer = "BytesIO", output = "ps", outputbuffer=f)
+		f.seek(0)
+		#Open the image as if it were a file. This works only for .ps!
+		img = Image.open(f)
+		#See note at the bottom
+		img.load(scale = 10)
+		img = img.resize((int(img.size[0]/2),int(img.size[1]/2)),Image.BILINEAR)
+		photo = ImageTk.PhotoImage(img)
+		self.image_label.config(image = photo)
+		self.image_label.image = photo
+		f.close()
 
 
 if __name__ == "__main__":
 	root = tk.Tk()
+	root.geometry("1500x700")
 	app = LagrangeApp(root)
+	
 	root.mainloop()
+
+"""
+{x^{1/3}}{y^{2/3}}
+3x+2y-12
+x y
+"""

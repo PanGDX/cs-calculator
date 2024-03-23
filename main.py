@@ -12,9 +12,6 @@ class CalculatorApp(tk.Tk):
         self.create_main_interface()
 
     def create_main_interface(self):
-        self.create_matplotlib_interface()
-
-
         search_frame = Frame(self.root)
         search_frame.pack(pady = "5px")
 
@@ -56,30 +53,6 @@ class CalculatorApp(tk.Tk):
                 self.listbox.insert(tk.END, item)
 
 
-    def create_matplotlib_interface(self):
-        matplotlib.use('TkAgg')
-
-        matplotlib_frame = Frame(self.root)
-        matplotlib_frame.pack(side=tk.TOP, padx="5px", fill="both")
-
-        entry_box_message = tk.Label(matplotlib_frame,text = "Input LaTex Here (Enter to input and check for errors)", font=("Helvetica 13"))
-        entry_box_message.pack(pady="2px")
-
-
-        self.latex_entry = Entry(matplotlib_frame, width=70, font=("Helvetica 13"))
-        self.latex_entry.pack(side=tk.TOP, pady="15px", padx="150px", fill="x")
-
-        fig = matplotlib.figure.Figure(figsize=(10, 3), dpi=100)
-        self.wx = fig.add_subplot(111)
-        self.latex_canvas = FigureCanvasTkAgg(fig, master=matplotlib_frame)
-        self.latex_canvas.get_tk_widget().pack(side=TOP)
-        self.latex_canvas._tkcanvas.pack(side=TOP)
-
-        self.wx.get_xaxis().set_visible(False)
-        self.wx.get_yaxis().set_visible(False)
-
-        self.root.bind('<Return>', self.graph)
-
     def copy_latex(self, event):
         pyperclip.copy("YES")
 
@@ -87,20 +60,7 @@ class CalculatorApp(tk.Tk):
         # Implement calculation logic here
         pass
 
-    def graph(self, event):
-        tmptext = self.latex_entry.get()
-        if tmptext == "":
-            self.wx.clear()
-            self.latex_canvas.draw()
-        else:
-            tmptext = "$" + tmptext + "$"
-            self.wx.clear()
-            try:
-                self.wx.text(0.5, 0.5, tmptext, fontsize=13, ha='center', va='center')
-                self.latex_canvas.draw()
-            except ValueError as e:
-                messagebox.showerror("Error", f"Error while parsing the mathematical expression {e}!\n Possibly incorrect Latex format!")
-
+ 
 if __name__ == '__main__':
     root = tk.Tk()
     width= root.winfo_screenwidth() 

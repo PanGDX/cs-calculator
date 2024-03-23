@@ -1,6 +1,6 @@
 # System Requirements
 - Ubuntu 22.04
-`sudo apt-get update`
+` sudo apt-get update && sudo apt-get upgrade`
 - Python 3.10.x
 - pip
 `sudo apt install python3-pip`
@@ -10,6 +10,10 @@
 `sudo apt-get install python3-tk`
 - requirements.txt
 `pip install -r requirements.txt`
+- LaTex and Ghostscript
+`sudo apt install texlive-latex-extra -y`
+`sudo apt-get install ghostscript`
+
 
 # Design choices
 
