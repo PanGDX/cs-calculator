@@ -1,9 +1,7 @@
 import sympy as sp
 import tkinter as tk
 from tkinter import Frame, Entry, TOP, messagebox
-from latex2sympy2 import latex2sympy, latex2latex
-from PIL import Image, ImageTk
-from io import BytesIO
+from latex2sympy2 import latex2sympy
 
 def solve_lagrange_multiplier(f, g, vars):
 	"""
@@ -46,25 +44,32 @@ class LagrangeApp:
 		input_frame = Frame(self.root)
 		input_frame.pack(side=tk.TOP, padx="5px", pady="10px")
 
-		tk.Label(input_frame, text="Function f (in LaTeX): ").pack(side=tk.LEFT)
-		self.f_entry = Entry(input_frame, width=30)
-		self.f_entry.pack(side=tk.LEFT)
+		tk.Label(input_frame, text="Function f (in LaTeX): ",font=("Helvetica 13")).pack(side=tk.TOP)
+		self.f_entry = Entry(input_frame, width=30 ,font=("Helvetica 13"))
+		self.f_entry.pack(side=tk.TOP)
 
-		tk.Label(input_frame, text="Constraint g (in LaTeX): ").pack(side=tk.LEFT)
-		self.g_entry = Entry(input_frame, width=30)
-		self.g_entry.pack(side=tk.LEFT)
+		tk.Label(input_frame, text="Constraint g (in LaTeX): ",font=("Helvetica 13")).pack(side=tk.TOP)
+		self.g_entry = Entry(input_frame, width=30,font=("Helvetica 13"))
+		self.g_entry.pack(side=tk.TOP)
 
-		tk.Label(input_frame, text="Variables (separated by space): ").pack(side=tk.LEFT)
-		self.vars_entry = Entry(input_frame, width=20)
-		self.vars_entry.pack(side=tk.LEFT)
+		tk.Label(input_frame, text="Variables (separated by space): ",font=("Helvetica 13")).pack(side=tk.TOP)
+		self.vars_entry = Entry(input_frame, width=20,font=("Helvetica 13"))
+		self.vars_entry.pack(side=tk.TOP)
 
-		self.button = tk.Button(text = "LaTeX!", command = self.on_latex)
-		self.image_label = tk.Label(self.root)
+		answer_frame = Frame(self.root)
+		answer_frame.pack(side=tk.BOTTOM, padx="5px", pady="10px")
+
+		self.button = tk.Button(answer_frame, text = "LaTeX!", command = self.solve_and_display,font=("Helvetica 13"))
+		self.answer_label = tk.Label(answer_frame)
+
+	
+		self.answer_label.pack(pady="10px")
+		self.button.pack()
 
 		self.root.bind('<Return>', self.solve_and_display)
 		
 
-	def solve_and_display(self, event):
+	def solve_and_display(self, event=""):
 		
 		f_latex = self.f_entry.get()
 		g_latex = self.g_entry.get()
@@ -86,46 +91,30 @@ class LagrangeApp:
 				print(f"{key}, {type(key)}, {solutions[key]}, {type(solutions[key])}")
 
 
-			self.on_latex(solutions)
+
 		except Exception as e:
 			messagebox.showerror("Error", f"An error occurred: {e}")
+		
+		self.on_latex(solutions)
 
 	def on_latex(self, solutions):
-		latex_text = r"$\displaystyle "
+		
+		latex_text=""
 		for sol in solutions:
-			latex_text += fr"{sp.latex(sol)} = {sp.latex(solutions[sol])},"
-		latex_text += r" $"
+			if "**" in str(solutions[sol]):
+				calculated = solutions[sol].evalf()
+				latex_text += f"{str(sol)} = {str(solutions[sol])} = {calculated}\n"
+			else:
+				latex_text += f"{str(sol)} = {str(solutions[sol])}\n"
 
 		print(latex_text)
+		self.answer_label.config(text = latex_text,font=("Helvetica 15"))
 
-		f = BytesIO()
-		the_color = "{" + self.root.cget('bg')[1:].upper()+"}"
-		sp.preview(latex_text, euler = False, 
-				   preamble = r"\documentclass{standalone}"
-				   	r"\usepackage{pagecolor}"
-				   	r"\definecolor{graybg}{HTML}" + the_color +
-				   	r"\pagecolor{graybg}"
-					r"\usepackage{amsmath}"
-					r"\usepackage{amsfonts}"
-					r"\usepackage{amssymb}"
-				   	r"\begin{document}"
-				   ,
-				   viewer = "BytesIO", output = "ps", outputbuffer=f)
-		f.seek(0)
-		#Open the image as if it were a file. This works only for .ps!
-		img = Image.open(f)
-		#See note at the bottom
-		img.load(scale = 10)
-		img = img.resize((int(img.size[0]/2),int(img.size[1]/2)),Image.BILINEAR)
-		photo = ImageTk.PhotoImage(img)
-		self.image_label.config(image = photo)
-		self.image_label.image = photo
-		f.close()
 
 
 if __name__ == "__main__":
 	root = tk.Tk()
-	root.geometry("1500x700")
+	root.geometry("700x500")
 	app = LagrangeApp(root)
 	
 	root.mainloop()

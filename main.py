@@ -1,15 +1,23 @@
 import tkinter as tk
-from tkinter import Frame, Button, Entry, messagebox, TOP, LEFT, BOTTOM
+from tkinter import Frame, Button, BOTTOM
 from latex2sympy2 import latex2sympy
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pyperclip
+from functions.LagrangeMultiplier import LagrangeApp
 
 class CalculatorApp(tk.Tk):
     def __init__(self, root):
         self.root = root
+        self.items = [
+            "Lagrange Multiplier", 
+            "Partial Differentiation", 
+            "Multi-variable integration", 
+            "Chain Rule", 
+            "curl", 
+            "div", 
+        ]
         self.create_main_interface()
+
+
 
     def create_main_interface(self):
         search_frame = Frame(self.root)
@@ -27,14 +35,7 @@ class CalculatorApp(tk.Tk):
         self.listbox = tk.Listbox(search_frame, font=("Helvetica 13"), height = 8, width = 40)
         self.listbox.pack()
 
-        self.items = [
-            "Lagrange Multiplier", 
-            "Partial Differentiation", 
-            "Multi-variable integration", 
-            "Chain Rule", 
-            "curl", 
-            "div", 
-        ]
+
         self.update_list()
 
         button_frame = Frame(self.root)
@@ -43,7 +44,7 @@ class CalculatorApp(tk.Tk):
         run_calculation_button = Button(button_frame, text="Select Operation", command=self.run_calculation, width=15, height=2, font=("Helvetica 13"))
         run_calculation_button.pack(pady="10px", padx="5px")
 
-        self.root.bind("<Control-c>", self.copy_latex)
+
 
     def update_list(self, *args):
         search_term = self.search_var.get().lower()
@@ -53,20 +54,24 @@ class CalculatorApp(tk.Tk):
                 self.listbox.insert(tk.END, item)
 
 
-    def copy_latex(self, event):
-        pyperclip.copy("YES")
-
     def run_calculation(self):
-        # Implement calculation logic here
-        pass
+        current_selection = self.listbox.curselection()
+
+        if current_selection:
+            match self.listbox.get(current_selection):
+                case "Lagrange Multiplier":
+                    sub_page = tk.Tk()
+                    sub_page.geometry("700x500")
+                    app = LagrangeApp(sub_page)
+
+                case _:
+                    print("None")
 
  
 if __name__ == '__main__':
     root = tk.Tk()
-    width= root.winfo_screenwidth() 
-    height= root.winfo_screenheight()
 
-    root.state('normal')
+    root.geometry("500x400")
     root.title("ULTIMATE CALCULATOR")
 
     app = CalculatorApp(root)
