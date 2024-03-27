@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import Frame, Button, BOTTOM
-from functions.SaveLatex import AppLatexConvert
 from functions.LagrangeMultiplier import LagrangeApp
 from functions.PartialDifferentiation import PartialDiffApp
 
@@ -60,13 +59,13 @@ class CalculatorApp(tk.Tk):
         if current_selection:
             match self.listbox.get(current_selection):
                 case "Lagrange Multiplier":
-                    sub_page = tk.Tk()
+                    sub_page = tk.Toplevel()
                     sub_page.geometry("700x500")
                     app = LagrangeApp(sub_page)
 
                 case "Partial Differentiation":
-                    sub_page = tk.Tk()
-                    sub_page.geometry("700x500")
+                    sub_page = tk.Toplevel()
+                    sub_page.geometry("1000x500")
                     app = PartialDiffApp(sub_page)
 
                 case _:

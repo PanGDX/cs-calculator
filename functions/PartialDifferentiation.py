@@ -4,10 +4,8 @@ from tkinter import Frame, Entry, TOP, messagebox
 from latex2sympy2 import latex2sympy
 from PIL import Image, ImageTk
 import os
-try:
-	from SaveLatex import AppLatexConvert
-except ImportError:
-	print("Dependency Structure Error. Ignoring Import")
+from .SaveLatex import AppLatexConvert
+
 
 
 
@@ -57,7 +55,7 @@ class PartialDiffApp:
 		self.f_entry.pack(side=tk.TOP)
 
 
-		tk.Label(input_frame, text="Variables (separated by space): ",font=("Helvetica 13")).pack(side=tk.TOP)
+		tk.Label(input_frame, text="Variable",font=("Helvetica 13")).pack(side=tk.TOP)
 		self.vars_entry = Entry(input_frame, width=20,font=("Helvetica 13"))
 		self.vars_entry.pack(side=tk.TOP)
 
@@ -82,9 +80,9 @@ class PartialDiffApp:
 		try:
 			f_sympy = latex2sympy(f_latex)
 			try:
-				vars_sympy = list(sp.symbols(variables))
-			except:
 				vars_sympy = sp.symbols(variables)
+			except:
+				messagebox.showinfo("Error", "Too many variables! Only 1!")
 
 			print(f_sympy)
 			print(vars_sympy)
@@ -98,17 +96,17 @@ class PartialDiffApp:
 		self.on_latex(solution)
 
 	def on_latex(self, solution:str):
-		temp = tk.Tk()
+		temp = tk.Toplevel()
 		temp.title("IMAGE")
 		temp.withdraw()
 		AppLatexConvert(temp, latex = solution)
 		
 
 		print(os.getcwd())
-		image = Image.open(f"{os.getcwd()}/image.png")
-		photo = ImageTk.PhotoImage(image)
-		self.answer_label.config(image=photo)
-		self.answer_label.photo = photo
+		self.image = Image.open(f"{os.getcwd()}/image.png")
+		self.photo = ImageTk.PhotoImage(self.image)
+		self.answer_label.config(image=self.photo)
+		self.answer_label.photo = self.photo
 		print("Opened photo")
 
 

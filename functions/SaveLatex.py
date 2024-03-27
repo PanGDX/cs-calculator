@@ -16,7 +16,7 @@ The script takes input from the user via a text box. The input is already enclos
 The script will crop your text appropriately, but cannot handle more than 1 page. Its main limitation is the platform dependence: the 'latex' command (line 102) works in linux, but not windows. It also depends on the dvipng package (only available for linux) to convert the .dvi file to a .png file.
 '''
 
-	def __init__(self, parent:Tk, latex, dpiLess:int=500):  # parent instead of master
+	def __init__(self, parent:Tk, latex, dpiLess:int=300):  # parent instead of master
 		if __name__ == "__main__":
 			abspath = os.path.abspath(__file__)
 			dname = os.path.dirname(abspath)
