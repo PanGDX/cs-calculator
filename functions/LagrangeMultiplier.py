@@ -59,7 +59,7 @@ class LagrangeApp:
 		answer_frame = Frame(self.root)
 		answer_frame.pack(side=tk.BOTTOM, padx="5px", pady="10px")
 
-		self.button = tk.Button(answer_frame, text = "LaTeX!", command = self.solve_and_display,font=("Helvetica 13"))
+		self.button = tk.Button(answer_frame, text = "Solve!", command = self.solve_and_display,font=("Helvetica 13"))
 		self.answer_label = tk.Label(answer_frame)
 
 	

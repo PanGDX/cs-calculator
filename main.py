@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import Frame, Button, BOTTOM
-from latex2sympy2 import latex2sympy
-import pyperclip
+from functions.SaveLatex import AppLatexConvert
 from functions.LagrangeMultiplier import LagrangeApp
+from functions.PartialDifferentiation import PartialDiffApp
 
 class CalculatorApp(tk.Tk):
     def __init__(self, root):
@@ -63,6 +63,11 @@ class CalculatorApp(tk.Tk):
                     sub_page = tk.Tk()
                     sub_page.geometry("700x500")
                     app = LagrangeApp(sub_page)
+
+                case "Partial Differentiation":
+                    sub_page = tk.Tk()
+                    sub_page.geometry("700x500")
+                    app = PartialDiffApp(sub_page)
 
                 case _:
                     print("None")
